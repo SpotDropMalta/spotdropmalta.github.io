@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071522">
+<title>SpotDrop Malta | Find parking, faster</title>
+<meta name="description" content="Find parking around Malta with SpotDrop. Explore nearby parking options, share available spots, and save where you parked.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SpotDrop Malta | Find parking, faster">
+<meta property="og:description" content="Discover nearby parking and share available spots. Try SpotDrop on Android or the web.">
+<style>
+:root{color-scheme:dark;--bg:#071522;--panel:#102839;--accent:#7af2c9;--ink:#f7fbff;--muted:#b6cad8}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100vh;background:radial-gradient(ellipse at 88% 5%,#174a51,transparent 42%),radial-gradient(ellipse at 0% 95%,#113149,transparent 48%),var(--bg);color:var(--ink)}
+.wrap{width:min(1100px,calc(100% - 42px));margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:27px 0}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);font-size:23px;font-weight:850;letter-spacing:-.04em}
+.mark{width:42px;height:42px;display:grid;place-items:center;background:var(--accent);color:#073039;border-radius:13px;font-size:25px}
+.tag{border:1px solid #496774;border-radius:100px;color:#b9f5df;padding:8px 12px;font-size:12px;font-weight:750}
+main{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:48px;padding:65px 0 62px}
+.kicker{display:flex;gap:9px;align-items:center;text-transform:uppercase;color:var(--accent);font-size:12px;letter-spacing:.12em;font-weight:800}
+.kicker:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px #7af2c927}
+h1{font-size:clamp(43px,6.7vw,75px);line-height:1.025;letter-spacing:-.065em;margin:24px 0;max-width:10ch}
+h1 em{font-style:normal;color:var(--accent)}
+p.lead{color:var(--muted);line-height:1.67;font-size:17px;max-width:47ch;margin:0 0 28px}
+.cta{display:flex;flex-direction:column;gap:12px;max-width:375px}
+.btn{display:flex;justify-content:center;align-items:center;gap:11px;text-decoration:none;font-size:16px;font-weight:800;min-height:58px;padding:14px 18px;border-radius:15px;border:1px solid transparent;transition:background .2s,transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible,button:focus-visible{outline:3px solid white;outline-offset:3px}
+.primary{background:var(--accent);color:#083239}
+.primary:hover{background:#a5ffe0}
+.secondary{background:#183345;color:#fff;border-color:#577584}
+.secondary:hover{background:#254b60}
+.btn svg{width:22px;height:22px;flex:none}
+.hint{color:#a8becc;font-size:12px;max-width:400px;line-height:1.6;margin-top:18px}
+.hint button{background:none;color:#9aefd3;border:0;text-decoration:underline;font:inherit;cursor:pointer;padding:0}
+#status{color:#b9f5df}
+.art{min-height:425px;position:relative;border:1px solid #4b7381;border-radius:31px;overflow:hidden;background:#9dbeaf;box-shadow:0 28px 75px #0008;isolation:isolate}
+.map{position:absolute;inset:0;transform:scale(1.07);background:repeating-linear-gradient(92deg,#8cb2a5 0 42px,#abd2b9 42px 85px)}
+.road{position:absolute;height:24px;width:150%;background:#f9f8e6;border:3px solid #d8ddcb;left:-20%;border-radius:100px;box-shadow:0 2px 5px #2246}
+.r1{top:36%;transform:rotate(34deg)}.r2{top:48%;transform:rotate(-42deg)}.r3{top:77%;transform:rotate(-15deg)}.r4{top:25%;transform:rotate(79deg)}
+.water{position:absolute;top:-90px;right:-100px;width:300px;height:220px;background:#88c9d9;transform:rotate(24deg);border-radius:70px;box-shadow:-8px 9px #e7dfb9}
+.pin{position:absolute;width:55px;height:55px;border:5px solid white;border-radius:50%;display:grid;place-items:center;font-weight:950;font-size:21px;background:#16735e;color:#fff;box-shadow:0 8px 21px #2238}
+.p1{top:90px;left:30%}.p2{top:196px;left:65%}.p3{top:285px;left:22%;background:#247aa2}
+.note{position:absolute;display:flex;gap:11px;align-items:center;background:#071c2aee;border:1px solid #507382;box-shadow:0 12px 30px #0005;border-radius:17px;padding:13px 15px}
+.note:first-of-type{left:15px;top:15px}.note.bottom{right:16px;bottom:16px}
+.note .emoji{font-size:24px}.note b,.note small{display:block}.note b{font-size:12px}.note small{color:#bdcfda;font-size:11px;margin-top:3px}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:42px}
+.feature{background:#17344699;border:1px solid #2b5364;border-radius:18px;padding:19px}
+.feature .symbol{font-size:24px}.feature strong{display:block;font-size:14px;margin:8px 0 4px}.feature p{margin:0;color:#b9c9d4;font-size:13px;line-height:1.55}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid #355365;padding:22px 0 32px;color:#b8c9d3;font-size:12px}
+footer a{color:#b8c9d3}
+@media(max-width:800px){main{grid-template-columns:1fr;padding:36px 0 35px;gap:34px}.art{width:100%;max-width:520px;min-height:305px;margin:auto}.features{grid-template-columns:1fr}.feature{padding:14px 16px}}
+@media(max-width:450px){.wrap{width:calc(100% - 30px)}header{padding:19px 0}.tag{font-size:10px}.art{min-height:255px}.pin{width:42px;height:42px;font-size:17px}.p1{top:62px}.p2{top:130px}.p3{top:190px}.note{padding:8px}.note small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><a class="logo" href="./" aria-label="SpotDrop homepage"><span class="mark">P</span>SpotDrop<span style="color:var(--accent)">.</span></a><span class="tag">MADE FOR MALTA 🇲🇹</span></header>
+<main>
+<section aria-labelledby="heading">
+<div class="kicker">Parking, made simpler</div>
+<h1 id="heading">Less searching.<br><em>More parking.</em></h1>
+<p class="lead">Meet SpotDrop: Malta's community-powered parking map. Explore nearby parking options, share available spots, and remember where you parked.</p>
+<div class="cta">
+<a class="btn primary" href="https://play.google.com/store/apps/details?id=com.spotdrop.malta" target="_blank" rel="noopener noreferrer" aria-label="Get SpotDrop on Google Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 2 21 12 4 22z"/></svg>Get SpotDrop on Google Play</a>
+<a class="btn secondary" href="https://drop-park.emergent.host/" target="_blank" rel="noopener noreferrer">🌐 &nbsp; Open SpotDrop in browser</a>
+</div>
+<p class="hint">Instagram not opening Google Play? Use the <b>⋯</b> menu and select <b>Open in browser</b>, or <button id="copy" type="button">copy the Play Store link</button>. <span role="status" aria-live="polite" id="status"></span></p>
+</section>
+<div class="art" role="img" aria-label="Illustrated parking map with location pins"><div class="map"><div class="water"></div><div class="road r1"></div><div class="road r2"></div><div class="road r3"></div><div class="road r4"></div><div class="pin p1">P</div><div class="pin p2">P</div><div class="pin p3">P</div></div><div class="note" style="left:15px;top:15px"><span class="emoji">📍</span><span><b>Find nearby parking</b><small>Explore your options</small></span></div><div class="note bottom"><span class="emoji">🚙</span><span><b>Save my car</b><small>Remember where you parked</small></span></div></div>
+</main>
+<section class="features" aria-label="SpotDrop features">
+<div class="feature"><span class="symbol">🗺️</span><strong>Explore the map</strong><p>See parking options and community reports nearby.</p></div>
+<div class="feature"><span class="symbol">🤝</span><strong>Share a spot</strong><p>Help drivers know when a parking spot becomes available.</p></div>
+<div class="feature"><span class="symbol">⏱️</span><strong>Parking clock</strong><p>Keep track of your parking time and car location.</p></div>
+</section>
+<footer><span>© <span id="year">2026</span> SpotDrop Malta</span><span>Community reports are not guaranteed. Follow road signs and parking rules.</span></footer>
+</div>
+<script>
+document.getElementById("year").textContent=String(new Date().getFullYear());
+document.getElementById("copy").addEventListener("click",async()=>{
+const link="https://play.google.com/store/apps/details?id=com.spotdrop.malta";
+try{await navigator.clipboard.writeText(link);document.getElementById("status").textContent="Copied!";}
+catch(e){document.getElementById("status").textContent="Use your browser's Copy link option.";}
+});
+</script>
+</body>
+</html>
