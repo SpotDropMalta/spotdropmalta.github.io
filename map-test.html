@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#101a26">
+<title>SpotDrop — Satellite Tile Test</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#101a26;color:#eef8ff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:950px;margin:auto}h1{font-size:19px;margin:12px 14px}.modes{display:flex;gap:8px;margin:0 12px 10px}.modes a{flex:1;display:block;background:#253b50;color:#fff;text-align:center;text-decoration:none;border:1px solid #566b80;border-radius:11px;padding:12px 5px;font-size:14px;font-weight:700}.modes a.selected{background:#84f8c5;color:#08342b}#map{height:58dvh;min-height:320px;width:100%;background:#2b2e35}section{padding:11px 14px;color:#cbd9e5;font-size:14px;line-height:1.6}p{margin:0 0 9px}.counts{display:flex;gap:7px;margin:8px 14px}.counts div{flex:1;min-width:0;padding:9px;background:#1b2b3c;border:1px solid #42556a;border-radius:9px}.counts small{display:block;color:#bfd0df;font-size:11px}.counts strong{font-size:23px}.status{font-size:12px;color:#b6cbd9;margin:8px 14px;min-height:33px}.actions{display:flex;gap:8px;margin:0 14px}.actions button{flex:1;background:#29455b;border:1px solid #557289;padding:11px;color:#fff;border-radius:10px;font:600 13px system-ui}.hint{font-size:12px;color:#9fcbb6;margin:7px 14px 12px;min-height:18px}footer{font-size:11px;line-height:1.5;padding:12px 14px;color:#95aabc;border-top:1px solid #34485d}@media(min-width:800px){#map{border-radius:14px}}
+</style>
+</head>
+<body><main>
+<h1>🚗 SpotDrop Satellite Map Test</h1>
+<nav class="modes"><a href="?mode=baseline" id="baseline">1. Original</a><a href="?mode=update" id="update">2. Updated</a></nav>
+<div id="map" aria-label="Test satellite map of Malta"></div>
+<section><p><b>Compare the modes:</b> Open Original, drag the map and hold your finger down for two seconds. Watch for dark/black squares. Do the same with Updated at the same zoom and location. Repeat 3 times per mode.</p><p>The test uses live Esri satellite tiles. It does not include other SpotDrop map layers and does not change the main app.</p></section>
+<div class="counts"><div><small>Tiles loaded</small><strong id="loaded">0</strong></div><div><small>Tile errors</small><strong id="errors">0</strong></div><div><small>Tile requests</small><strong id="requests">0</strong></div></div>
+<div class="status" id="status">Initializing map…</div>
+<div class="actions"><button id="copy" type="button">Copy results</button><button id="reset" type="button">Reset zoom/location</button></div>
+<div class="hint" id="feedback" role="status"></div>
+<footer>This is an isolated diagnostic. No SpotDrop player data or GPS location is used; map images are requested from Esri. The original SpotDrop app is unchanged.</footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+ 'use strict';
+ var mode=new URLSearchParams(location.search).get('mode')==='update'?'update':'baseline';
+ document.getElementById(mode).classList.add('selected');
+ var defaults={center:[35.8469,14.5031],zoom:19};
+ var saved=null;try{saved=JSON.parse(sessionStorage.getItem('spotdrop_test_view')||'null');}catch(e){}
+ if(!window.L){document.getElementById('status').textContent='Leaflet failed to load. Check internet and retry.';return;}
+ var map=L.map('map',{center:saved&&saved.center||defaults.center,zoom:saved&&saved.zoom||defaults.zoom,minZoom:10,maxZoom:19,zoomSnap:1,preferCanvas:true});
+ var counts={loaded:0,errors:0,requests:0,unloaded:0};
+ var lastEvents=[];
+ var tiles=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'Tiles &copy; Esri; imagery providers listed by Esri',maxZoom:19,maxNativeZoom:19,keepBuffer:2,
+  updateWhenIdle:mode==='baseline'
+ }).addTo(map);
+ function note(name){lastEvents.push({name:name,time:new Date().toISOString()});if(lastEvents.length>30)lastEvents.shift();}
+ [['tileloadstart','requests'],['tileload','loaded'],['tileerror','errors'],['tileunload','unloaded']].forEach(function(pair){tiles.on(pair[0],function(){counts[pair[1]]++;if(pair[0]==='tileerror')note('tileerror');render();});});
+ function snapshot(){var el=map.getContainer(),r=el.getBoundingClientRect(),imgs=Array.from(el.querySelectorAll('.leaflet-tile'));
+  return {mode:mode,updateWhenIdle:mode==='baseline',keepBuffer:2,zoom:map.getZoom(),tileElements:imgs.length,
+    visibleTileElements:imgs.filter(function(im){var b=im.getBoundingClientRect();return b.width>0&&b.height>0&&b.left<r.right&&b.right>r.left&&b.top<r.bottom&&b.bottom>r.top}).length,
+    brokenImages:imgs.filter(function(im){return im.complete&&im.naturalWidth===0}).length,counts:counts};
+ }
+ function render(){document.getElementById('loaded').textContent=counts.loaded;document.getElementById('errors').textContent=counts.errors;document.getElementById('requests').textContent=counts.requests;
+  var s=snapshot();document.getElementById('status').textContent='Mode: '+(mode==='update'?'updateWhenIdle=false':'updateWhenIdle=true')+' · Zoom: '+s.zoom+' · Visible tiles: '+s.visibleTileElements+' · Broken: '+s.brokenImages;
+ }
+ map.on('moveend zoomend',function(){var c=map.getCenter();try{sessionStorage.setItem('spotdrop_test_view',JSON.stringify({center:[c.lat,c.lng],zoom:map.getZoom()}));}catch(e){}render();});
+ map.on('movestart',function(){note('movestart')});map.on('moveend',function(){note('moveend')});
+ document.getElementById('copy').onclick=async function(){var out=JSON.stringify({captured:new Date().toISOString(),snapshot:snapshot(),events:lastEvents},null,2);try{await navigator.clipboard.writeText(out);document.getElementById('feedback').textContent='Copied. Paste results in ChatGPT.';}catch(e){document.getElementById('feedback').textContent='Copy failed; send a screenshot of counters.';}};
+ document.getElementById('reset').onclick=function(){map.setView(defaults.center,defaults.zoom);try{sessionStorage.removeItem('spotdrop_test_view');}catch(e){}document.getElementById('feedback').textContent='Map reset.';};
+ addEventListener('resize',function(){map.invalidateSize()});setInterval(render,2000);render();
+})();
+</script>
+</body></html>
